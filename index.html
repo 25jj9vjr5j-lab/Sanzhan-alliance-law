@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>同盟土法 V3｜同盟法規與條例查詢系統</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Noto Sans TC & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            ink: '#1E293B',
+            paper: '#F8FAFC',
+            gold: {
+              DEFAULT: '#B45309',
+              light: '#FEF3C7',
+              dark: '#92400E'
+            },
+            crimson: {
+              DEFAULT: '#BE123C',
+              light: '#FFF1F2',
+              border: '#FECDD3'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 隱藏水平捲軸但保留滑動功能 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* 錨點跳轉預留頂部搜尋列高度 */
+    section[id], div[id^="ch-"], div[id="appendix-section"] {
+      scroll-margin-top: 150px;
+    }
+    @media (min-width: 1024px) {
+      section[id], div[id^="ch-"], div[id="appendix-section"] {
+        scroll-margin-top: 135px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans antialiased selection:bg-amber-200 selection:text-slate-900">
+
+  <!-- 管理員編輯模式頂部浮動控制列（僅解鎖後顯示） -->
+  <div id="admin-banner" class="hidden sticky top-0 z-50 bg-slate-900 text-white border-b-2 border-amber-500 shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-500/20 text-amber-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </span>
+        <div>
+          <p class="text-sm font-bold text-amber-300 leading-tight">管理員編輯模式已解鎖</p>
+          <p class="text-xs text-slate-300">修改完成後請點擊「儲存並發布」，所有成員將即時看到最新版本。</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-restore-default" type="button" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 transition">
+          還原預設條文
+        </button>
+        <button id="btn-exit-edit" type="button" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-700 hover:bg-slate-600 text-white transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          退出編輯（鎖定）
+        </button>
+        <button id="btn-save-publish" type="button" class="px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span id="save-btn-text">儲存並發布</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 頁首區塊 -->
+  <header class="bg-white border-b border-slate-200/80 relative overflow-hidden">
+    <!-- 頂部赤金色裝飾線 -->
+    <div class="h-1.5 w-full bg-gradient-to-r from-amber-700 via-amber-500 to-rose-700"></div>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+  <!-- 頂部標題與操作按鈕列 -->
+  <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+    <div class="space-y-2.5 flex-1">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-[#B45309] border border-amber-200/80">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          生效日期：<span id="display-effective-date">26年11月20日</span>
+        </span>
+        <span id="sync-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+          <span id="sync-dot" class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          <span id="sync-text">即時同步就緒</span>
+        </span>
+      </div>
+
+      <!-- 標題顯示區 / 編輯區 -->
+      <div id="header-title-view">
+        <h1 id="display-title" class="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900">同盟土法 V3</h1>
+      </div>
+      <div id="header-title-edit" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 mb-1">法規文件標題</label>
+          <input id="input-title" type="text" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-amber-50/30 text-slate-900 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-500 mb-1">生效日期</label>
+          <input id="input-effective-date" type="text" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-amber-50/30 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 右側功能按鈕 -->
+    <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+      <button id="btn-copy-all" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm transition active:scale-[0.98]">
+        <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+        一鍵複製文字版
+      </button>
+      <button id="btn-admin-unlock" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-sm transition active:scale-[0.98]">
+        <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        管理員修改
+      </button>
+    </div>
+  </div>
+
+  <!-- 不溯及既往公告提示條 -->
+  <div class="mt-5 rounded-xl bg-amber-50/90 border border-amber-200/90 px-4 py-3 flex items-start gap-3">
+    <svg class="w-5 h-5 text-[#B45309] shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <div class="flex-1 text-sm text-amber-950 leading-relaxed">
+      <span class="font-bold text-[#B45309] mr-1">生效公告：</span>
+      <span id="display-notice">不溯及既往，生效前之違規須於公告後 24 小時內自行整改，逾期依本法處置</span>
+      <input id="input-notice" type="text" class="hidden mt-1.5 w-full px-3 py-1.5 rounded-lg border border-amber-300 bg-white text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+    </div>
+  </div>
+
+  <!-- 基本資訊卡片網格 -->
+  <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <!-- 適用地區 -->
+    <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+      <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+        <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        適用地區
+      </div>
+      <p id="display-region" class="text-sm font-semibold text-slate-800">全地圖</p>
+      <input id="input-region" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+    </div>
+    <!-- 主責土地官 -->
+    <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+      <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+        <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        主責土地官
+      </div>
+      <p id="display-main-officer" class="text-sm font-semibold text-slate-800">暫無 接受自薦（目前由盟主代理）</p>
+      <input id="input-main-officer" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+    </div>
+    <!-- 代理土地官 -->
+    <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+      <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+        <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        代理土地官
+      </div>
+      <p id="display-acting-officer" class="text-sm font-semibold text-slate-800">暫無 接受自薦</p>
+      <input id="input-acting-officer" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+    </div>
+    <!-- 著作人 -->
+    <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+      <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+        <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+        著作人
+      </div>
+      <p id="display-author" class="text-sm font-semibold text-slate-800">鯊</p>
+      <input id="input-author" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+    </div>
+  </div>
+</div>
+  </header>
+
+  <!-- 頂部固定（Sticky）搜尋與快速篩選列 -->
+  <div id="sticky-search-bar" class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 space-y-2.5">
+      <!-- 搜尋輸入框列 -->
+      <div class="flex items-center gap-2.5">
+        <div class="relative flex-1">
+          <svg class="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input
+            id="search-input"
+            type="text"
+            placeholder="搜尋章節、條號（如 第5條）或關鍵字（如 銅地、偷跑、下野、罰款、飛地）..."
+            class="w-full pl-11 pr-10 py-2.5 rounded-xl bg-slate-100/80 border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/60 focus:border-amber-500 transition"
+          />
+          <button id="btn-clear-search-icon" type="button" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full" title="清除搜尋">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+  <!-- 常用關鍵字快捷篩選按鈕（水平捲動） -->
+  <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5" id="quick-tags-container">
+    <!-- 由 JS 動態生成 -->
+  </div>
+
+  <!-- 手機版章節快速跳轉列（僅小於 lg 顯示） -->
+  <div class="flex lg:hidden items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-slate-100" id="mobile-toc-container">
+    <!-- 由 JS 動態生成 -->
+  </div>
+
+  <!-- 搜尋結果統計列（僅搜尋時顯示） -->
+  <div id="search-status-bar" class="hidden flex items-center justify-between bg-amber-50 border border-amber-200/80 rounded-lg px-3 py-1.5 text-xs sm:text-sm">
+    <span class="text-amber-900 font-medium">
+      搜尋「<strong id="search-keyword-display" class="text-[#B45309]"></strong>」：找到 <strong id="search-count-display" class="text-[#BE123C]">0</strong> 筆相關條例
+    </span>
+    <button id="btn-clear-search" type="button" class="text-[#B45309] hover:text-amber-900 font-semibold underline underline-offset-2 ml-2 shrink-0">
+      清除搜尋
+    </button>
+  </div>
+</div>
+  </div>
+
+  <!-- 主內容區：桌面版左側目錄 + 右側法規內容 -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+  <!-- 桌面版左側快速導覽目錄 -->
+  <aside class="hidden lg:block lg:col-span-3 sticky top-[135px]">
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4">
+      <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2.5 mb-2.5 flex items-center gap-1.5">
+        <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+        章節快速導覽
+      </h2>
+      <nav id="desktop-toc-container" class="space-y-1 max-h-[65vh] overflow-y-auto pr-1">
+        <!-- 由 JS 動態生成 -->
+      </nav>
+    </div>
+  </aside>
+
+  <!-- 右側法規條文主體 -->
+  <div class="lg:col-span-9 space-y-7">
+    <!-- 編輯模式：新增章節按鈕 -->
+    <div id="add-chapter-bar" class="hidden">
+      <button id="btn-add-chapter" type="button" class="w-full py-3 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/50 hover:bg-amber-50 text-[#B45309] font-semibold text-sm flex items-center justify-center gap-2 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        新增章節
+      </button>
+    </div>
+
+    <!-- 章節與條文容器 -->
+    <div id="chapters-container" class="space-y-8">
+      <!-- 由 JS 動態生成 -->
+    </div>
+
+    <!-- 搜尋無結果提示 -->
+    <div id="empty-search-state" class="hidden bg-white rounded-2xl border border-slate-200 p-10 text-center shadow-sm">
+      <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h3 class="text-base font-bold text-slate-800 mb-1">找不到符合的法規條例</h3>
+      <p class="text-sm text-slate-500 mb-4">請嘗試更換其他關鍵字（例如：保地、飛地、銅地、攻城、罰款）或清除篩選條件。</p>
+      <button id="btn-empty-reset" type="button" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold transition">
+        顯示全部條例
+      </button>
+    </div>
+
+    <!-- 附則區塊 -->
+    <div id="appendix-section" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+      <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-5 rounded-full bg-amber-500"></span>
+          <h2 class="text-base sm:text-lg font-bold tracking-wide">附則</h2>
+        </div>
+        <button id="btn-add-appendix" type="button" class="hidden px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition">
+          + 新增附則
+        </button>
+      </div>
+      <div id="appendix-container" class="p-5 space-y-3">
+        <!-- 由 JS 動態生成 -->
+      </div>
+    </div>
+
+    <!-- 頁尾資訊 -->
+    <footer class="pt-4 pb-10 text-center text-xs text-slate-400 space-y-1">
+      <p id="footer-updated-info">同盟法規管理系統・支援手機與電腦即時查閱</p>
+    </footer>
+  </div>
+</div>
+  </main>
+
+  <!-- = 自訂彈窗區（禁止使用 alert/confirm） = -->
+
+  <!-- 1. 管理員密碼驗證視窗 -->
+  <div id="password-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-sm w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl bg-amber-100 text-[#B45309] flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </span>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">管理員身分驗證</h3>
+            <p class="text-xs text-slate-500">請輸入管理密碼以解鎖編輯權限</p>
+          </div>
+        </div>
+        <button id="btn-close-pw-modal" type="button" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+  <form id="password-form" class="space-y-3">
+    <div>
+      <input
+        id="password-input"
+        type="password"
+        autocomplete="off"
+        placeholder="請輸入管理員密碼..."
+        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+      />
+      <p id="password-error" class="hidden mt-1.5 text-xs font-medium text-[#BE123C]">密碼錯誤，請重新輸入。</p>
+    </div>
+    <div class="flex items-center justify-end gap-2 pt-1">
+      <button id="btn-cancel-pw" type="button" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">取消</button>
+      <button type="submit" class="px-4 py-2 rounded-xl text-sm font-semibold bg-slate-900 hover:bg-slate-800 text-white transition">確認解鎖</button>
+    </div>
+  </form>
+</div>
+  </div>
+
+  <!-- 2. 條例編輯／新增視窗 -->
+  <div id="article-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 id="article-modal-title" class="text-base font-bold text-slate-900">編輯條例</h3>
+        <button id="btn-close-article-modal" type="button" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="article-form" class="p-6 space-y-4 overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">條號（例：第1條）</label>
+            <input id="art-input-number" type="text" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">條例標題</label>
+            <input id="art-input-title" type="text" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">核心規則（每行代表一條重點，可留空）</label>
+          <textarea id="art-input-rules" rows="5" placeholder="每換行一次會自動呈現為獨立條目..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-[#BE123C] mb-1">違規罰則／注意事項（每行代表一條重點，將以警示紅框顯示，可留空）</label>
+          <textarea id="art-input-penalties" rows="4" placeholder="輸入違規處罰或特別注意事項，無罰則可留空..." class="w-full px-3 py-2 rounded-xl border border-rose-200 bg-rose-50/30 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-rose-500"></textarea>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button id="btn-cancel-article" type="button" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">取消</button>
+          <button type="submit" class="px-5 py-2 rounded-xl text-sm font-semibold bg-amber-600 hover:bg-amber-700 text-white transition">套用修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. 通用二次確認視窗 -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-sm w-full p-6 space-y-4">
+      <div class="space-y-1.5">
+        <h3 id="confirm-modal-title" class="text-base font-bold text-slate-900">確認操作</h3>
+        <p id="confirm-modal-message" class="text-sm text-slate-600 leading-relaxed"></p>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button id="btn-confirm-cancel" type="button" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">取消</button>
+        <button id="btn-confirm-ok" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-[#BE123C] hover:bg-rose-800 text-white transition">確認執行</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 輕量提示氣泡（Toast） -->
+  <div id="toast" class="pointer-events-none fixed bottom-6 left-1/2 -translate-x-1/2 z-50 opacity-0 translate-y-3 transition-all duration-300">
+    <div id="toast-inner" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium shadow-lg flex items-center gap-2 whitespace-nowrap">
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
+  <!-- Firebase 與應用程式主邏輯 -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // =
+    // 1. 預設完整法規資料（同盟土法 V3 - 完整收錄所有細節與數字）
+    // =
+    const ADMIN_PASSWORD = String.fromCharCode(115,97,110,122,104,97,110,48,51,49,55); // sanzhan0317
+    const QUICK_TAGS = ["全部", "保地", "飛地", "銅地", "攻城", "工程車", "遷城", "勢力值", "罰則", "上訴"];
+
+    function getDefaultLawData() {
+      return {
+        title: "同盟土法 V3",
+        effectiveDate: "26年11月20日",
+        notice: "不溯及既往，生效前之違規須於公告後 24 小時內自行整改，逾期依本法處置",
+        meta: {
+          region: "全地圖",
+          mainOfficer: "暫無 接受自薦（目前由盟主代理）",
+          actingOfficer: "暫無 接受自薦",
+          author: "鯊"
+        },
+        chapters: [
+          {
+            id: "ch-1",
+            number: "第一章",
+            title: "土地權屬規範",
+            articles: [
+              {
+                id: "art-1",
+                number: "第1條",
+                title: "主城保護區",
+                rules: [
+                  "1. 主城周邊 3 格、分城周邊 1 格劃為「保地」，無論土地等級，禁止任何盟友「飛地」或「連地佔領」（經同意除外，超時不適用）。",
+                  "2. 例外：能提供「佔領時間截圖」證明自身早於城主遷城者，可保留原有土地。",
+                  "3. 若主城保地區域重疊，則採「先到先得」原則。"
+                ],
+                penalties: []
+              },
+              {
+                id: "art-2",
+                number: "第2條",
+                title: "圈地禁令",
+                rules: [
+                  "1. 嚴禁包圍高級資源地（7-10級）之「圈地行為」。",
+                  "2. 認定標準：凡利用自身土地、建築、地形或聯合小號，將所有可連接入口封死（含僅留 1 格但無法正常連地之惡意卡位），皆屬圈地。"
+                ],
+                penalties: []
+              }
+            ]
+          },
+          {
+            id: "ch-2",
+            number: "第二章",
+            title: "飛地與糾紛處理",
+            articles: [
+              {
+                id: "art-3",
+                number: "第3條",
+                title: "飛地限制",
+                rules: [
+                  "1. 一般土地飛地規則：須向目標地持有者發送申請；超時未回應（6小時）視為「默許」，但需截圖存證。（接戰時會因應情況更改飛地限制；凌晨 00:00–08:00 不計算在詢問時間內）",
+                  "2. 舉證責任：「申訴方」需提供佔領時間戳、官員申報記錄、土地連接地圖；「被申訴方」可反駁證據，否則視為違規。"
+                ],
+                penalties: []
+              },
+              {
+                id: "art-4",
+                number: "第4條",
+                title: "飛地累犯處罰",
+                rules: [],
+                penalties: [
+                  "初犯：警告＋強制放地",
+                  "再犯：下野 48 小時＋資源罰款",
+                  "三犯：永久踢除＋全盟通緝",
+                  "註：拒不放地或逾期未放地者，直接升級至下一階段處罰。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "ch-3",
+            number: "第三章",
+            title: "銅地佔領",
+            articles: [
+              {
+                id: "art-5",
+                number: "第5條",
+                title: "銅地規定",
+                rules: [
+                  "1. 八銅最多為 10 塊。",
+                  "2. 九銅、十銅為國家資源，禁打。符合戰功或鋪路貢獻門檻者，可向盟主申請，經核准後方可佔領。"
+                ],
+                penalties: [
+                  "超打八銅者：24 小時內放棄超額銅地，每超額 1 塊罰款四資各 50 萬。",
+                  "偷打九、十銅者：12 小時內強制放地，並罰款四資各 50 萬（合計 200 萬）；再犯者直接下野 48 小時。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "ch-4",
+            number: "第四章",
+            title: "攻城紀律",
+            articles: [
+              {
+                id: "art-6",
+                number: "第6條",
+                title: "攻城",
+                rules: [
+                  "1. 攻城時必須嚴格按照指揮官規定，於準確時間秒壓，嚴禁偷跑。"
+                ],
+                penalties: [
+                  "偷跑者按提前秒數計算，每秒罰款「四資各 2 萬」。",
+                  "情節嚴重（如導致搶尾刀失敗或重大戰損）者，管理層得依第 11 條加罰至下野 48 小時。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "ch-5",
+            number: "第五章",
+            title: "工程車管理條例",
+            articles: [
+              {
+                id: "art-7",
+                number: "第7條",
+                title: "鋪路權屬",
+                rules: [
+                  "1. 優先服務「州戰推進」「關卡突破」等集體目標，禁止用於個人資源地擴張（管理層允許除外）。",
+                  "2. 工程車鋪路地段為「公用」，不設飛地限制。",
+                  "3. 佔領規則：鋪路終點土地適用「先到先得」原則；嚴禁「站地不佔」卡位行為，部隊抵達目標地後，若停留或戰平超過 10 分鐘仍未完成佔領（不含正常行軍時間），視同自動放棄，他人可直接接手。"
+                ],
+                penalties: [
+                  "違規用於個人擴張者：沒收當季鋪路權並罰款四資各 25 萬。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "ch-6",
+            number: "第六章",
+            title: "資州遷城",
+            articles: [
+              {
+                id: "art-8",
+                number: "第8條",
+                title: "資州遷城",
+                rules: [
+                  "1. 資源州遷城屆時依管理層公告之名單、指定時間及指定區域執行，所有盟友嚴禁以任何私人理由擅自遷城至非指定區域。"
+                ],
+                penalties: [
+                  "違規者上繳資源「四資各 75 萬，合計 300 萬」，且須於 72 小時（冷卻結束）後立刻遷離，並不得佔領任何資州土地。",
+                  "拒不繳款或逾期未遷離者，全盟公告並直接下野 48 小時，期間不保護任何領地，且不免除原定罰款。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "ch-7",
+            number: "第七章",
+            title: "開戰及勢力值規範",
+            articles: [
+              {
+                id: "art-9",
+                number: "第9條",
+                title: "開戰及勢力值注意事項",
+                rules: [
+                  "1. 開戰前勢力值限制 25,000，門神 28,000；開戰後根據戰況再作調整，並另行公告。",
+                  "2. 戰區不限制任何接地，但嚴禁「戰場吸血行為」：凡當週戰功未達同盟公告之最低標準，且無鋪路／清低等地紀錄，卻直接搶佔前線高等地（6-10級）者。"
+                ],
+                penalties: [
+                  "勢力值超標者：24 小時內須自行放地降至標準以下，並按每超標 1,000 勢力值（未滿 500 以 500 計）罰款四資各 10 萬。",
+                  "戰場吸血經查證屬實：初犯罰款四資各 20 萬，12 小時內返還高地；再犯直接永久下野。"
+                ]
+              }
+            ]
+          },
+          {
+            id: "ch-8",
+            number: "第八章",
+            title: "糾紛仲裁",
+            articles: [
+              {
+                id: "art-10",
+                number: "第10條",
+                title: "爭議處理流程",
+                rules: [
+                  "1. 雙方先進行「私訊協商」（須保留完整對話截圖）。",
+                  "2. 協商無果者，備齊第 3 條規定之證據提交給「土地官」進行初審裁定。",
+                  "3. 若涉案人為土地官本人，應迴避並直接由「代理土地官」或「盟主」審理。"
+                ],
+                penalties: []
+              }
+            ]
+          },
+          {
+            id: "ch-9",
+            number: "第九章",
+            title: "罰則與上訴及豁免",
+            articles: [
+              {
+                id: "art-11",
+                number: "第11條",
+                title: "執法程序",
+                rules: [
+                  "1. 罰款繳納規範：所有罰款須於裁定公告後「24 小時內」繳清至同盟倉庫。本法已明定金額之罰則一律照章執行，不得私自減免；僅於「本法未明定金額」或「情節特別重大須加重處罰」時，由盟主、副盟、土地官三人合議裁定。",
+                  "2. 覆議（上訴）機制：對土地官之初審處分不服者，可於「24 小時內」檢附新證據向「盟主／副盟」提出覆議（原裁定之土地官不得參與覆議表決），覆議結果為最終裁定，不得再行上訴。"
+                ],
+                penalties: [
+                  "逾期未繳罰款者：直接處以下野 48 小時（不保護領地）並加倍罰款；拒不執行者永久踢除。"
+                ]
+              },
+              {
+                id: "art-12",
+                number: "第12條",
+                title: "特殊豁免",
+                rules: [
+                  "1. 以下情況免責：遊戲系統 BUG 導致異常佔地。"
+                ],
+                penalties: []
+              }
+            ]
+          }
+        ],
+        appendix: [
+          "1. 本法令解釋權歸［管理層］所有。",
+          "2. 官員理應熟知法令，如知法犯法：初犯罰 3 倍，再犯革除官位並罰 5 倍。"
+        ],
+        updatedAt: ""
+      };
+    }
+
+    // =
+    // 2. 應用程式狀態管理
+    // =
+    let publishedData = getDefaultLawData();
+    let draftData = null;
+    let isEditMode = false;
+    let searchQuery = "";
+    let activeQuickTag = "全部";
+
+    // Firebase 相關參考
+    let db = null;
+    let auth = null;
+    let currentUser = null;
+    let lawDocRef = null;
+    let isFirebaseReady = false;
+
+    // 條例編輯彈窗狀態
+    let editingTarget = null; // { chIdx, artIdx } (artIdx = -1 表示新增)
+    let confirmCallback = null;
+
+    const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
+
+    function getActiveData() {
+      return isEditMode && draftData ? draftData : publishedData;
+    }
+
+    // =
+    // 3. Firebase 初始化與即時同步（嚴格遵守認證與路徑規範）
+    // =
+    async function initFirebase() {
+      const syncDot = document.getElementById("sync-dot");
+      const syncText = document.getElementById("sync-text");
+
+      try {
+        const appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id";
+        const firebaseConfig = typeof __firebase_config !== "undefined" ? JSON.parse(__firebase_config) : null;
+
+        if (!firebaseConfig) {
+          syncDot.className = "w-2 h-2 rounded-full bg-amber-500";
+          syncText.textContent = "本機預覽模式";
+          return;
+        }
+
+        const app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+
+        // 先完成身分認證，再執行任何 Firestore 操作
+        if (typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        } else {
+          await signInAnonymously(auth);
+        }
+
+        currentUser = auth.currentUser;
+        if (!currentUser) {
+          throw new Error("無法取得使用者認證");
+        }
+
+        // 嚴格使用公用路徑：/artifacts/{appId}/public/data/{collectionName}/{docId}
+        lawDocRef = doc(db, "artifacts", appId, "public", "data", "alliance_laws", "main_v3");
+        isFirebaseReady = true;
+
+        // 即時監聽法規更新（含錯誤回呼）
+        onSnapshot(
+          lawDocRef,
+          (snapshot) => {
+            if (snapshot.exists()) {
+              const remoteData = snapshot.data();
+              if (remoteData && Array.isArray(remoteData.chapters)) {
+                publishedData = remoteData;
+                if (!isEditMode) {
+                  renderAll();
+                }
+              }
+            }
+            syncDot.className = "w-2 h-2 rounded-full bg-emerald-500";
+            syncText.textContent = "雲端即時同步中";
+            updateFooterTime();
+          },
+          (error) => {
+            console.error("Firestore onSnapshot error:", error);
+            syncDot.className = "w-2 h-2 rounded-full bg-rose-500";
+            syncText.textContent = "同步連線異常";
+          }
+        );
+      } catch (err) {
+        console.error("Firebase init error:", err);
+        syncDot.className = "w-2 h-2 rounded-full bg-amber-500";
+        syncText.textContent = "離線模式";
+      }
+    }
+
+    // =
+    // 4. 文字處理與高亮度標記工具
+    // =
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeRegExp(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    function highlightText(text, keyword) {
+      const safe = escapeHtml(text);
+      if (!keyword || !keyword.trim()) return safe;
+      const regex = new RegExp(`(${escapeRegExp(keyword.trim())})`, "gi");
+      return safe.replace(regex, '<mark class="bg-amber-200/95 text-slate-900 rounded px-0.5 font-semibold">$1</mark>');
+    }
+
+    // 判斷關鍵字是否匹配（同時支援「罰則」快捷搜尋有罰則的條例）
+    function matchesArticle(chapter, article, keyword) {
+      const q = keyword.trim().toLowerCase();
+      if (!q) return true;
+      if (q = "罰則" && article.penalties && article.penalties.length > 0) return true;
+
+      const haystack = [
+        chapter.number,
+        chapter.title,
+        article.number,
+        article.title,
+        ...(article.rules || []),
+        ...(article.penalties || [])
+      ].join(" ").toLowerCase();
+
+      return haystack.includes(q);
+    }
+
+    function showToast(msg, isError = false) {
+      const toast = document.getElementById("toast");
+      const inner = document.getElementById("toast-inner");
+      const text = document.getElementById("toast-message");
+      text.textContent = msg;
+      inner.className = `px-4 py-2.5 rounded-xl text-sm font-medium shadow-lg flex items-center gap-2 whitespace-nowrap ${
+        isError ? "bg-[#BE123C] text-white" : "bg-slate-900 text-white"
+      }`;
+      toast.classList.remove("opacity-0", "translate-y-3");
+      toast.classList.add("opacity-100", "translate-y-0");
+
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-3");
+        toast.classList.remove("opacity-100", "translate-y-0");
+      }, 2600);
+    }
+
+    // =
+    // 5. 畫面渲染核心
+    // =
+    function renderAll() {
+      const data = getActiveData();
+      renderHeader(data);
+      renderQuickTags();
+      renderChaptersAndToc(data);
+      renderAppendix(data);
+      updateEditModeUI();
+      updateFooterTime();
+    }
+
+    function updateFooterTime() {
+      const data = getActiveData();
+      const footer = document.getElementById("footer-updated-info");
+      if (data.updatedAt) {
+        footer.textContent = `${data.title}・最後更新於 ${data.updatedAt}`;
+      } else {
+        footer.textContent = `${data.title}・同盟法規即時查閱系統`;
+      }
+    }
+
+    function renderHeader(data) {
+      document.title = `${data.title}｜同盟法規與條例查詢系統`;
+      document.getElementById("display-title").textContent = data.title;
+      document.getElementById("display-effective-date").textContent = data.effectiveDate;
+      document.getElementById("display-notice").textContent = data.notice;
+      document.getElementById("display-region").textContent = data.meta.region;
+      document.getElementById("display-main-officer").textContent = data.meta.mainOfficer;
+      document.getElementById("display-acting-officer").textContent = data.meta.actingOfficer;
+      document.getElementById("display-author").textContent = data.meta.author;
+
+      // 同步編輯輸入框的值
+      document.getElementById("input-title").value = data.title;
+      document.getElementById("input-effective-date").value = data.effectiveDate;
+      document.getElementById("input-notice").value = data.notice;
+      document.getElementById("input-region").value = data.meta.region;
+      document.getElementById("input-main-officer").value = data.meta.mainOfficer;
+      document.getElementById("input-acting-officer").value = data.meta.actingOfficer;
+      document.getElementById("input-author").value = data.meta.author;
+    }
+
+    function updateEditModeUI() {
+      const toggle = (id, show) => {
+        const el = document.getElementById(id);
+        if (el) el.classList.toggle("hidden", !show);
+      };
+
+      toggle("admin-banner", isEditMode);
+      toggle("btn-admin-unlock", !isEditMode);
+      toggle("header-title-view", !isEditMode);
+      toggle("header-title-edit", isEditMode);
+      toggle("display-notice", !isEditMode);
+      toggle("input-notice", isEditMode);
+      toggle("add-chapter-bar", isEditMode);
+      toggle("btn-add-appendix", isEditMode);
+
+      ["region", "main-officer", "acting-officer", "author"].forEach((key) => {
+        toggle(`display-${key}`, !isEditMode);
+        toggle(`input-${key}`, isEditMode);
+      });
+
+      // 調整 sticky 搜尋列位置避免被管理列遮擋
+      const stickyBar = document.getElementById("sticky-search-bar");
+      if (isEditMode) {
+        stickyBar.style.top = "60px";
+      } else {
+        stickyBar.style.top = "0px";
+      }
+    }
+
+    function renderQuickTags() {
+      const container = document.getElementById("quick-tags-container");
+      container.innerHTML = QUICK_TAGS.map((tag) => {
+        const isActive = activeQuickTag = tag;
+        return `
+          <button
+            type="button"
+            data-tag="${escapeHtml(tag)}"
+            class="quick-tag-btn shrink-0 px-3 py-1 rounded-full text-xs font-semibold transition border ${
+              isActive
+                ? "bg-[#B45309] text-white border-[#B45309] shadow-sm"
+                : "bg-white text-slate-600 border-slate-200 hover:border-amber-400 hover:text-[#B45309]"
+            }"
+          >
+            ${escapeHtml(tag)}
+          </button>
+        `;
+      }).join("");
+    }
+
+    function renderChaptersAndToc(data) {
+      const chaptersContainer = document.getElementById("chapters-container");
+      const desktopToc = document.getElementById("desktop-toc-container");
+      const mobileToc = document.getElementById("mobile-toc-container");
+      const searchStatusBar = document.getElementById("search-status-bar");
+      const emptyState = document.getElementById("empty-search-state");
+
+      const q = searchQuery.trim();
+      let totalMatches = 0;
+
+      // 產生章節目錄（桌面版與手機版）
+      const desktopLinks = [];
+      const mobileLinks = [];
+      const chaptersHtml = [];
+
+      data.chapters.forEach((chapter, chIdx) => {
+        const filteredArticles = chapter.articles
+          .map((art, artIdx) => ({ art, artIdx }))
+          .filter(({ art }) => isEditMode || matchesArticle(chapter, art, q));
+
+        // 非編輯模式且搜尋中時，若該章節無符合條例則隱藏
+        if (!isEditMode && q && filteredArticles.length === 0) {
+          return;
+        }
+
+        totalMatches += filteredArticles.length;
+
+        const chAnchor = `ch-section-${chIdx}`;
+        desktopLinks.push(`
+          <a href="#${chAnchor}" class="block px-2.5 py-2 rounded-xl text-xs font-medium text-slate-600 hover:bg-amber-50 hover:text-[#B45309] transition truncate">
+            <span class="font-bold text-[#B45309] mr-1">${escapeHtml(chapter.number)}</span>${escapeHtml(chapter.title)}
+          </a>
+        `);
+        mobileLinks.push(`
+          <a href="#${chAnchor}" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-700 hover:bg-amber-100 hover:text-[#B45309] transition">
+            ${escapeHtml(chapter.number)} ${escapeHtml(chapter.title)}
+          </a>
+        `);
+
+        // 渲染該章節的條例卡片
+        const articlesHtml = filteredArticles.map(({ art, artIdx }) => {
+          const hasRules = art.rules && art.rules.length > 0;
+          const hasPenalties = art.penalties && art.penalties.length > 0;
+
+          return `
+            <article class="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+              <!-- 條例標題列 -->
+              <div class="px-5 py-3.5 bg-slate-50/80 border-b border-slate-200/70 flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-bold bg-amber-100 text-[#B45309] border border-amber-200/80">
+                    ${highlightText(art.number, q)}
+                  </span>
+                  <h3 class="text-base font-bold text-slate-900">
+                    ${highlightText(art.title, q)}
+                  </h3>
+                </div>
+                ${
+                  isEditMode
+                    ? `
+                  <div class="flex items-center gap-1.5">
+                    <button type="button" data-action="edit-article" data-ch="${chIdx}" data-art="${artIdx}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-amber-50 hover:bg-amber-100 text-[#B45309] border border-amber-200 transition">
+                      編輯條例
+                    </button>
+                    <button type="button" data-action="delete-article" data-ch="${chIdx}" data-art="${artIdx}" class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-[#BE123C] border border-rose-200 transition">
+                      刪除
+                    </button>
+                  </div>
+                  `
+                    : ""
+                }
+              </div>
+
+              <!-- 條例內容區 -->
+              <div class="p-5 space-y-4">
+                ${
+                  hasRules
+                    ? `
+                  <div class="space-y-2">
+                    <div class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 uppercase tracking-wide">
+                      <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                      核心規則
+                    </div>
+                    <ul class="space-y-2 text-sm sm:text-[15px] text-slate-700 leading-relaxed">
+                      ${art.rules
+                        .map(
+                          (rule) => `
+                        <li class="pl-3 border-l-2 border-slate-200">${highlightText(rule, q)}</li>
+                      `
+                        )
+                        .join("")}
+                    </ul>
+                  </div>
+                  `
+                    : ""
+                }
+
+                ${
+                  hasPenalties
+                    ? `
+                  <div class="rounded-xl bg-[#FFF1F2] border border-[#FECDD3] p-4 space-y-2">
+                    <div class="flex items-center gap-1.5 text-xs font-bold text-[#BE123C]">
+                      <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                      違規罰則／注意事項
+                    </div>
+                    <ul class="space-y-1.5 text-sm sm:text-[15px] text-rose-950 leading-relaxed">
+                      ${art.penalties
+                        .map(
+                          (p) => `
+                        <li class="flex items-start gap-2">
+                          <span class="text-[#BE123C] font-bold mt-0.5">•</span>
+                          <span>${highlightText(p, q)}</span>
+                        </li>
+                      `
+                        )
+                        .join("")}
+                    </ul>
+                  </div>
+                  `
+                    : ""
+                }
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        chaptersHtml.push(`
+          <section id="${chAnchor}" class="space-y-4">
+            <!-- 章節標題列 -->
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b-2 border-slate-200">
+              ${
+                isEditMode
+                  ? `
+                <div class="flex flex-wrap items-center gap-2 flex-1">
+                  <input type="text" data-action="edit-ch-num" data-ch="${chIdx}" value="${escapeHtml(chapter.number)}" class="w-24 px-2.5 py-1 rounded-lg border border-amber-300 bg-white text-sm font-bold text-[#B45309] focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                  <input type="text" data-action="edit-ch-title" data-ch="${chIdx}" value="${escapeHtml(chapter.title)}" class="flex-1 min-w-[160px] px-2.5 py-1 rounded-lg border border-amber-300 bg-white text-base font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <button type="button" data-action="add-article" data-ch="${chIdx}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white transition">
+                    + 新增條例
+                  </button>
+                  <button type="button" data-action="delete-chapter" data-ch="${chIdx}" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-[#BE123C] border border-rose-200 transition">
+                    刪除章節
+                  </button>
+                </div>
+                `
+                  : `
+                <div class="flex items-center gap-2.5">
+                  <span class="w-2 h-6 rounded-full bg-[#B45309]"></span>
+                  <h2 class="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
+                    <span class="text-[#B45309] mr-1.5">${highlightText(chapter.number, q)}</span>${highlightText(chapter.title, q)}
+                  </h2>
+                </div>
+                <span class="text-xs font-medium text-slate-400">共 ${filteredArticles.length} 條</span>
+                `
+              }
+            </div>
+
+            <!-- 條例列表 -->
+            <div class="space-y-4">
+              ${
+                articlesHtml ||
+                `<div class="text-sm text-slate-400 italic py-4 text-center bg-white rounded-xl border border-dashed border-slate-200">本章節尚無條例，請點擊「+ 新增條例」</div>`
+              }
+            </div>
+          </section>
+        `);
+      });
+
+      // 加入附則導覽連結
+      desktopLinks.push(`
+        <a href="#appendix-section" class="block px-2.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-amber-50 hover:text-[#B45309] transition border-t border-slate-100 mt-1 pt-2.5">
+          附則與官員罰則
+        </a>
+      `);
+      mobileLinks.push(`
+        <a href="#appendix-section" class="shrink-0 px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-200/80 text-slate-800 hover:bg-amber-100 hover:text-[#B45309] transition">
+          附則
+        </a>
+      `);
+
+      desktopToc.innerHTML = desktopLinks.join("");
+      mobileToc.innerHTML = mobileLinks.join("");
+      chaptersContainer.innerHTML = chaptersHtml.join("");
+
+      // 處理搜尋統計與無結果狀態
+      const appendixMatches = (data.appendix || []).filter((item) => !q || item.toLowerCase().includes(q.toLowerCase())).length;
+      const totalWithAppendix = totalMatches + (q ? appendixMatches : 0);
+
+      if (q && !isEditMode) {
+        searchStatusBar.classList.remove("hidden");
+        document.getElementById("search-keyword-display").textContent = q;
+        document.getElementById("search-count-display").textContent = String(totalWithAppendix);
+        emptyState.classList.toggle("hidden", totalWithAppendix > 0);
+      } else {
+        searchStatusBar.classList.add("hidden");
+        emptyState.classList.add("hidden");
+      }
+    }
+
+    function renderAppendix(data) {
+      const container = document.getElementById("appendix-container");
+      const q = searchQuery.trim();
+      const items = data.appendix || [];
+
+      if (isEditMode) {
+        container.innerHTML = items.length
+          ? items
+              .map(
+                (item, idx) => `
+              <div class="flex items-start gap-2">
+                <textarea data-action="edit-appendix" data-idx="${idx}" rows="2" class="flex-1 px-3 py-2 rounded-xl border border-amber-300 bg-amber-50/20 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500">${escapeHtml(item)}</textarea>
+
+            <button type="button" data-action="delete-appendix" data-idx="${idx}" class="px-2.5 py-2 rounded-xl text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-[#BE123C] border border-rose-200 transition shrink-0">
+              刪除
+            </button>
+          </div>
+        `
+          )
+          .join("")
+      : `<p class="text-sm text-slate-400 italic text-center py-2">尚無附則項目</p>`;
+  } else {
+    container.innerHTML = items
+      .map(
+        (item) => `
+      <div class="flex items-start gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200/70 text-sm sm:text-[15px] text-slate-800 leading-relaxed">
+        <span class="w-2 h-2 rounded-full bg-[#B45309] mt-2 shrink-0"></span>
+        <div>${highlightText(item, q)}</div>
+      </div>
+    `
+      )
+      .join("");
+  }
+}
+
+// =========================================================================
+// 6. 一鍵複製純文字版（使用 document.execCommand('copy') 確保 iFrame 相容）
+// =========================================================================
+function generatePlainText(data) {
+  const lines = [];
+  lines.push(`【${data.title}】`);
+  lines.push(`生效日期：${data.effectiveDate}`);
+  lines.push(`（${data.notice}）`);
+  lines.push(`適用地區：${data.meta.region}`);
+  lines.push(`主責土地官：${data.meta.mainOfficer}`);
+  lines.push(`代理土地官：${data.meta.actingOfficer}`);
+  lines.push(`著作人：${data.meta.author}`);
+  lines.push("--------------------------------");
+
+  data.chapters.forEach((ch) => {
+    lines.push(`\n${ch.number} ${ch.title}`);
+    ch.articles.forEach((art) => {
+      lines.push(`${art.number} ${art.title}`);
+      (art.rules || []).forEach((r) => lines.push(`  ${r}`));
+      if (art.penalties && art.penalties.length > 0) {
+        lines.push(`  【違規罰則／注意事項】`);
+        art.penalties.forEach((p) => lines.push(`  • ${p}`));
+      }
+    });
+  });
+
+  if (data.appendix && data.appendix.length > 0) {
+    lines.push("\n【附則】");
+    data.appendix.forEach((a) => lines.push(a));
+  }
+  return lines.join("\n");
+}
+
+function copyLawText() {
+  const text = generatePlainText(getActiveData());
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  try {
+    const ok = document.execCommand("copy");
+    if (ok) {
+      showToast("已複製完整文字版法規，可直接貼上至群組！");
+    } else {
+      showToast("複製失敗，請手動選取文字。", true);
+    }
+  } catch (e) {
+    showToast("複製失敗，請手動選取文字。", true);
+  } finally {
+    document.body.removeChild(textarea);
+  }
+}
+
+// =========================================================================
+// 7. 管理員編輯與雲端發布邏輯
+// =========================================================================
+function enterEditMode() {
+  draftData = deepClone(publishedData);
+  isEditMode = true;
+  searchQuery = "";
+  activeQuickTag = "全部";
+  document.getElementById("search-input").value = "";
+  document.getElementById("btn-clear-search-icon").classList.add("hidden");
+  renderAll();
+  showToast("已解鎖管理員編輯模式");
+}
+
+function exitEditMode() {
+  isEditMode = false;
+  draftData = null;
+  renderAll();
+  showToast("已退出編輯並鎖定為唯讀模式");
+}
+
+async function saveAndPublish() {
+  if (!isEditMode || !draftData) return;
+
+  // 同步頁首輸入欄位至 draftData
+  draftData.title = document.getElementById("input-title").value.trim() || "同盟土法 V3";
+  draftData.effectiveDate = document.getElementById("input-effective-date").value.trim();
+  draftData.notice = document.getElementById("input-notice").value.trim();
+  draftData.meta.region = document.getElementById("input-region").value.trim();
+  draftData.meta.mainOfficer = document.getElementById("input-main-officer").value.trim();
+  draftData.meta.actingOfficer = document.getElementById("input-acting-officer").value.trim();
+  draftData.meta.author = document.getElementById("input-author").value.trim();
+
+  const now = new Date();
+  draftData.updatedAt = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}/${String(now.getDate()).padStart(2, "0")} ${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+  const btnText = document.getElementById("save-btn-text");
+  btnText.textContent = "發布中...";
+
+  try {
+    if (isFirebaseReady && currentUser && lawDocRef) {
+      await setDoc(lawDocRef, draftData);
+      publishedData = deepClone(draftData);
+      showToast("已成功儲存並即時同步至所有成員！");
+    } else {
+      publishedData = deepClone(draftData);
+      showToast("已更新法規（本機預覽模式）");
+    }
+    renderAll();
+  } catch (err) {
+    console.error("Save error:", err);
+    showToast("儲存失敗，請檢查網路連線後重試。", true);
+  } finally {
+    btnText.textContent = "儲存並發布";
+  }
+}
+
+// =========================================================================
+// 8. 彈窗控制（密碼驗證、條例編輯、二次確認）
+// =========================================================================
+function openPasswordModal() {
+  const modal = document.getElementById("password-modal");
+  const input = document.getElementById("password-input");
+  const error = document.getElementById("password-error");
+  input.value = "";
+  error.classList.add("hidden");
+  modal.classList.remove("hidden");
+  setTimeout(() => input.focus(), 50);
+}
+
+function closePasswordModal() {
+  document.getElementById("password-modal").classList.add("hidden");
+}
+
+function openArticleModal(chIdx, artIdx) {
+  editingTarget = { chIdx, artIdx };
+  const modal = document.getElementById("article-modal");
+  const titleEl = document.getElementById("article-modal-title");
+  const numInput = document.getElementById("art-input-number");
+  const titleInput = document.getElementById("art-input-title");
+  const rulesInput = document.getElementById("art-input-rules");
+  const penaltiesInput = document.getElementById("art-input-penalties");
+
+  if (artIdx === -1) {
+    titleEl.textContent = "新增法規條例";
+    numInput.value = "";
+    titleInput.value = "";
+    rulesInput.value = "";
+    penaltiesInput.value = "";
+  } else {
+    const art = draftData.chapters[chIdx].articles[artIdx];
+    titleEl.textContent = `編輯條例：${art.number} ${art.title}`;
+    numInput.value = art.number || "";
+    titleInput.value = art.title || "";
+    rulesInput.value = (art.rules || []).join("\n");
+    penaltiesInput.value = (art.penalties || []).join("\n");
+  }
+
+  modal.classList.remove("hidden");
+  setTimeout(() => numInput.focus(), 50);
+}
+
+function closeArticleModal() {
+  document.getElementById("article-modal").classList.add("hidden");
+  editingTarget = null;
+}
+
+function openConfirmModal(title, message, onConfirm) {
+  document.getElementById("confirm-modal-title").textContent = title;
+  document.getElementById("confirm-modal-message").textContent = message;
+  confirmCallback = onConfirm;
+  document.getElementById("confirm-modal").classList.remove("hidden");
+}
+
+function closeConfirmModal() {
+  document.getElementById("confirm-modal").classList.add("hidden");
+  confirmCallback = null;
+}
+
+// =========================================================================
+// 9. 事件監聽綁定
+// =========================================================================
+function bindEvents() {
+  // 搜尋框即時過濾
+  const searchInput = document.getElementById("search-input");
+  const clearIcon = document.getElementById("btn-clear-search-icon");
+
+  searchInput.addEventListener("input", (e) => {
+    searchQuery = e.target.value;
+    activeQuickTag = QUICK_TAGS.includes(searchQuery.trim()) ? searchQuery.trim() : searchQuery.trim() === "" ? "全部" : "";
+    clearIcon.classList.toggle("hidden", !searchQuery);
+    renderQuickTags();
+    renderChaptersAndToc(getActiveData());
+    renderAppendix(getActiveData());
+  });
+
+  const resetSearch = () => {
+    searchQuery = "";
+    activeQuickTag = "全部";
+    searchInput.value = "";
+    clearIcon.classList.add("hidden");
+    renderQuickTags();
+    renderChaptersAndToc(getActiveData());
+    renderAppendix(getActiveData());
+  };
+
+  clearIcon.addEventListener("click", resetSearch);
+  document.getElementById("btn-clear-search").addEventListener("click", resetSearch);
+  document.getElementById("btn-empty-reset").addEventListener("click", resetSearch);
+
+  // 快捷篩選標籤點擊
+  document.getElementById("quick-tags-container").addEventListener("click", (e) => {
+    const btn = e.target.closest(".quick-tag-btn");
+    if (!btn) return;
+    const tag = btn.dataset.tag;
+    activeQuickTag = tag;
+    searchQuery = tag === "全部" ? "" : tag;
+    searchInput.value = searchQuery;
+    clearIcon.classList.toggle("hidden", !searchQuery);
+    renderQuickTags();
+    renderChaptersAndToc(getActiveData());
+    renderAppendix(getActiveData());
+  });
+
+  // 一鍵複製文字版
+  document.getElementById("btn-copy-all").addEventListener("click", copyLawText);
+
+  // 管理員解鎖與密碼表單
+  document.getElementById("btn-admin-unlock").addEventListener("click", openPasswordModal);
+  document.getElementById("btn-close-pw-modal").addEventListener("click", closePasswordModal);
+  document.getElementById("btn-cancel-pw").addEventListener("click", closePasswordModal);
+  document.getElementById("password-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const val = document.getElementById("password-input").value.trim();
+    if (val === ADMIN_PASSWORD) {
+      closePasswordModal();
+      enterEditMode();
+    } else {
+      document.getElementById("password-error").classList.remove("hidden");
+    }
+  });
+
+  // 管理員頂部按鈕
+  document.getElementById("btn-save-publish").addEventListener("click", saveAndPublish);
+  document.getElementById("btn-exit-edit").addEventListener("click", exitEditMode);
+  document.getElementById("btn-restore-default").addEventListener("click", () => {
+    openConfirmModal(
+      "還原預設條文",
+      "確定要將所有章節、條例與基本資訊還原為「同盟土法 V3」原始預設內容嗎？（還原後需點擊「儲存並發布」才會同步至雲端）",
+      () => {
+        draftData = getDefaultLawData();
+        renderAll();
+        showToast("已還原為預設條文，請記得點擊「儲存並發布」");
+      }
+    );
+  });
+
+  // 新增章節
+  document.getElementById("btn-add-chapter").addEventListener("click", () => {
+    if (!draftData) return;
+    const nextNum = draftData.chapters.length + 1;
+    draftData.chapters.push({
+      id: `ch-${Date.now()}`,
+      number: `第${nextNum}章`,
+      title: "新章節名稱",
+      articles: []
+    });
+    renderChaptersAndToc(draftData);
+    showToast("已新增章節");
+  });
+
+  // 章節與條例委派事件（編輯／刪除／新增）
+  const chaptersContainer = document.getElementById("chapters-container");
+  chaptersContainer.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn || !draftData) return;
+    const action = btn.dataset.action;
+    const chIdx = Number(btn.dataset.ch);
+    const artIdx = Number(btn.dataset.art);
+
+    if (action === "add-article") {
+      openArticleModal(chIdx, -1);
+    } else if (action === "edit-article") {
+      openArticleModal(chIdx, artIdx);
+    } else if (action === "delete-article") {
+      const art = draftData.chapters[chIdx].articles[artIdx];
+      openConfirmModal("刪除條例", `確定要刪除「${art.number} ${art.title}」嗎？`, () => {
+        draftData.chapters[chIdx].articles.splice(artIdx, 1);
+        renderChaptersAndToc(draftData);
+        showToast("已刪除條例");
+      });
+    } else if (action === "delete-chapter") {
+      const ch = draftData.chapters[chIdx];
+      openConfirmModal("刪除章節", `確定要刪除整個「${ch.number} ${ch.title}」及其下所有條例嗎？`, () => {
+        draftData.chapters.splice(chIdx, 1);
+        renderChaptersAndToc(draftData);
+        showToast("已刪除章節");
+      });
+    }
+  });
+
+  chaptersContainer.addEventListener("input", (e) => {
+    const input = e.target.closest("input[data-action]");
+    if (!input || !draftData) return;
+    const chIdx = Number(input.dataset.ch);
+    if (input.dataset.action === "edit-ch-num") {
+      draftData.chapters[chIdx].number = input.value;
+    } else if (input.dataset.action === "edit-ch-title") {
+      draftData.chapters[chIdx].title = input.value;
+    }
+  });
+
+  // 條例編輯表單送出
+  document.getElementById("btn-close-article-modal").addEventListener("click", closeArticleModal);
+  document.getElementById("btn-cancel-article").addEventListener("click", closeArticleModal);
+  document.getElementById("article-form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!editingTarget || !draftData) return;
+    const { chIdx, artIdx } = editingTarget;
+    const newArt = {
+      id: artIdx === -1 ? `art-${Date.now()}` : draftData.chapters[chIdx].articles[artIdx].id,
+      number: document.getElementById("art-input-number").value.trim(),
+      title: document.getElementById("art-input-title").value.trim(),
+      rules: document
+        .getElementById("art-input-rules")
+        .value.split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      penalties: document
+        .getElementById("art-input-penalties")
+        .value.split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    };
+
+    if (artIdx === -1) {
+      draftData.chapters[chIdx].articles.push(newArt);
+      showToast("已新增條例，請記得點擊「儲存並發布」");
+    } else {
+      draftData.chapters[chIdx].articles[artIdx] = newArt;
+      showToast("已更新條例，請記得點擊「儲存並發布」");
+    }
+    closeArticleModal();
+    renderChaptersAndToc(draftData);
+  });
+
+  // 附則新增／編輯／刪除
+  document.getElementById("btn-add-appendix").addEventListener("click", () => {
+    if (!draftData) return;
+    const nextIdx = (draftData.appendix || []).length + 1;
+    draftData.appendix.push(`${nextIdx}. 請輸入新的附則條文...`);
+    renderAppendix(draftData);
+  });
+
+  const appendixContainer = document.getElementById("appendix-container");
+  appendixContainer.addEventListener("input", (e) => {
+    const ta = e.target.closest('textarea[data-action="edit-appendix"]');
+    if (!ta || !draftData) return;
+    draftData.appendix[Number(ta.dataset.idx)] = ta.value;
+  });
+  appendixContainer.addEventListener("click", (e) => {
+    const btn = e.target.closest('button[data-action="delete-appendix"]');
+    if (!btn || !draftData) return;
+    draftData.appendix.splice(Number(btn.dataset.idx), 1);
+    renderAppendix(draftData);
+  });
+
+  // 二次確認彈窗按鈕
+  document.getElementById("btn-confirm-cancel").addEventListener("click", closeConfirmModal);
+  document.getElementById("btn-confirm-ok").addEventListener("click", () => {
+    if (typeof confirmCallback === "function") {
+      confirmCallback();
+    }
+    closeConfirmModal();
+  });
+}
+
+// =========================================================================
+// 10. 啟動應用程式
+// =========================================================================
+bindEvents();
+renderAll();
+initFirebase();
+  </script>
+</body>
+</html>
+
