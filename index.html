@@ -1,8 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>同盟土法 V3｜同盟法規與條例查詢系統</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Noto Sans TC & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans TC"', 'Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            ink: '#1E293B',
+            paper: '#F8FAFC',
+            gold: {
+              DEFAULT: '#B45309',
+              light: '#FEF3C7',
+              dark: '#92400E'
+            },
+            crimson: {
+              DEFAULT: '#BE123C',
+              light: '#FFF1F2',
+              border: '#FECDD3'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 隱藏水平捲軸但保留滑動功能 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    /* 錨點跳轉預留頂部搜尋列高度 */
+    section[id], div[id^="ch-"], div[id="appendix-section"] {
+      scroll-margin-top: 150px;
+    }
+    @media (min-width: 1024px) {
+      section[id], div[id^="ch-"], div[id="appendix-section"] {
+        scroll-margin-top: 135px;
+      }
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-[#1E293B] font-sans antialiased selection:bg-amber-200 selection:text-slate-900">
+
+  <!-- 管理員編輯模式頂部浮動控制列（僅解鎖後顯示） -->
+  <div id="admin-banner" class="hidden sticky top-0 z-50 bg-slate-900 text-white border-b-2 border-amber-500 shadow-lg">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-500/20 text-amber-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        </span>
+        <div>
+          <p class="text-sm font-bold text-amber-300 leading-tight">管理員編輯模式已解鎖</p>
+          <p class="text-xs text-slate-300">修改完成後請點擊「儲存並發布」，所有成員將即時看到最新版本。</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-restore-default" type="button" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 transition">
+          還原預設條文
+        </button>
+        <button id="btn-exit-edit" type="button" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-700 hover:bg-slate-600 text-white transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          退出編輯（鎖定）
+        </button>
+        <button id="btn-save-publish" type="button" class="px-4 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-amber-600 hover:bg-amber-500 text-white shadow-sm transition flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          <span id="save-btn-text">儲存並發布</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 頁首區塊 -->
+  <header class="bg-white border-b border-slate-200/80 relative overflow-hidden">
+    <!-- 頂部赤金色裝飾線 -->
+    <div class="h-1.5 w-full bg-gradient-to-r from-amber-700 via-amber-500 to-rose-700"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <!-- 頂部標題與操作按鈕列 -->
+      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div class="space-y-2.5 flex-1">
+          <div class="flex flex-wrap items-center gap-2.5">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-[#B45309] border border-amber-200/80">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              生效日期：<span id="display-effective-date">26年11月20日</span>
+            </span>
+            <span id="sync-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-600 border border-slate-200">
+              <span id="sync-dot" class="w-2 h-2 rounded-full bg-amber-500"></span>
+              <span id="sync-text">連線中...</span>
+            </span>
+          </div>
+
+          <!-- 標題顯示區 / 編輯區 -->
+          <div id="header-title-view">
+            <h1 id="display-title" class="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900">同盟土法 V3</h1>
+          </div>
+          <div id="header-title-edit" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">法規文件標題</label>
+              <input id="input-title" type="text" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-amber-50/30 text-slate-900 font-bold text-lg focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1">生效日期</label>
+              <input id="input-effective-date" type="text" class="w-full px-3 py-2 rounded-xl border border-amber-300 bg-amber-50/30 text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 右側功能按鈕 -->
+        <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+          <button id="btn-copy-all" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm transition active:scale-[0.98]">
+            <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            一鍵複製文字版
+          </button>
+          <button id="btn-admin-unlock" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold bg-slate-900 hover:bg-slate-800 text-white shadow-sm transition active:scale-[0.98]">
+            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            管理員修改
+          </button>
+        </div>
+      </div>
+
+      <!-- 不溯及既往公告提示條 -->
+      <div class="mt-5 rounded-xl bg-amber-50/90 border border-amber-200/90 px-4 py-3 flex items-start gap-3">
+        <svg class="w-5 h-5 text-[#B45309] shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <div class="flex-1 text-sm text-amber-950 leading-relaxed">
+          <span class="font-bold text-[#B45309] mr-1">生效公告：</span>
+          <span id="display-notice">不溯及既往，生效前之違規須於公告後 24 小時內自行整改，逾期依本法處置</span>
+          <input id="input-notice" type="text" class="hidden mt-1.5 w-full px-3 py-1.5 rounded-lg border border-amber-300 bg-white text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+      </div>
+
+      <!-- 基本資訊卡片網格 -->
+      <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <!-- 適用地區 -->
+        <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+          <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+            <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            適用地區
+          </div>
+          <p id="display-region" class="text-sm font-semibold text-slate-800">全地圖</p>
+          <input id="input-region" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+        <!-- 主責土地官 -->
+        <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+          <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+            <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            主責土地官
+          </div>
+          <p id="display-main-officer" class="text-sm font-semibold text-slate-800">暫無 接受自薦（目前由盟主代理）</p>
+          <input id="input-main-officer" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+        <!-- 代理土地官 -->
+        <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+          <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+            <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            代理土地官
+          </div>
+          <p id="display-acting-officer" class="text-sm font-semibold text-slate-800">暫無 接受自薦</p>
+          <input id="input-acting-officer" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+        <!-- 著作人 -->
+        <div class="rounded-xl bg-slate-50 border border-slate-200/80 p-3.5">
+          <div class="text-xs font-semibold text-slate-500 flex items-center gap-1.5 mb-1">
+            <svg class="w-3.5 h-3.5 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            著作人
+          </div>
+          <p id="display-author" class="text-sm font-semibold text-slate-800">鯊</p>
+          <input id="input-author" type="text" class="hidden mt-1 w-full px-2.5 py-1.5 rounded-lg border border-amber-300 bg-white text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 頂部固定（Sticky）搜尋與快速篩選列 -->
+  <div id="sticky-search-bar" class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm transition-all">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 space-y-2.5">
+      <!-- 搜尋輸入框列 -->
+      <div class="flex items-center gap-2.5">
+        <div class="relative flex-1">
+          <svg class="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input
+            id="search-input"
+            type="text"
+            placeholder="搜尋章節、條號（如 第5條）或關鍵字（如 銅地、偷跑、下野、罰款、飛地）..."
+            class="w-full pl-11 pr-10 py-2.5 rounded-xl bg-slate-100/80 border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-amber-500/60 focus:border-amber-500 transition"
+          />
+          <button id="btn-clear-search-icon" type="button" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 rounded-full" title="清除搜尋">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 常用關鍵字快捷篩選按鈕（水平捲動） -->
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-0.5" id="quick-tags-container">
+        <!-- 由 JS 動態生成 -->
+      </div>
+
+      <!-- 手機版章節快速跳轉列（僅小於 lg 顯示） -->
+      <div class="flex lg:hidden items-center gap-1.5 overflow-x-auto no-scrollbar pt-1 border-t border-slate-100" id="mobile-toc-container">
+        <!-- 由 JS 動態生成 -->
+      </div>
+
+      <!-- 搜尋結果統計列（僅搜尋時顯示） -->
+      <div id="search-status-bar" class="hidden flex items-center justify-between bg-amber-50 border border-amber-200/80 rounded-lg px-3 py-1.5 text-xs sm:text-sm">
+        <span class="text-amber-900 font-medium">
+          搜尋「<strong id="search-keyword-display" class="text-[#B45309]"></strong>」：找到 <strong id="search-count-display" class="text-[#BE123C]">0</strong> 筆相關條例
+        </span>
+        <button id="btn-clear-search" type="button" class="text-[#B45309] hover:text-amber-900 font-semibold underline underline-offset-2 ml-2 shrink-0">
+          清除搜尋
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 主內容區：桌面版左側目錄 + 右側法規內容 -->
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+      <!-- 桌面版左側快速導覽目錄 -->
+      <aside class="hidden lg:block lg:col-span-3 sticky top-[135px]">
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400 px-2.5 mb-2.5 flex items-center gap-1.5">
+            <svg class="w-4 h-4 text-amber-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+            章節快速導覽
+          </h2>
+          <nav id="desktop-toc-container" class="space-y-1 max-h-[65vh] overflow-y-auto pr-1">
+            <!-- 由 JS 動態生成 -->
+          </nav>
+        </div>
+      </aside>
+
+      <!-- 右側法規條文主體 -->
+      <div class="lg:col-span-9 space-y-7">
+        <!-- 編輯模式：新增章節按鈕 -->
+        <div id="add-chapter-bar" class="hidden">
+          <button id="btn-add-chapter" type="button" class="w-full py-3 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/50 hover:bg-amber-50 text-[#B45309] font-semibold text-sm flex items-center justify-center gap-2 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            新增章節
+          </button>
+        </div>
+
+        <!-- 章節與條文容器 -->
+        <div id="chapters-container" class="space-y-8">
+          <!-- 由 JS 動態生成 -->
+        </div>
+
+        <!-- 搜尋無結果提示 -->
+        <div id="empty-search-state" class="hidden bg-white rounded-2xl border border-slate-200 p-10 text-center shadow-sm">
+          <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-800 mb-1">找不到符合的法規條例</h3>
+          <p class="text-sm text-slate-500 mb-4">請嘗試更換其他關鍵字（例如：保地、飛地、銅地、攻城、罰款）或清除篩選條件。</p>
+          <button id="btn-empty-reset" type="button" class="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-sm font-semibold transition">
+            顯示全部條例
+          </button>
+        </div>
+
+        <!-- 附則區塊 -->
+        <div id="appendix-section" class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden">
+          <div class="bg-slate-900 text-white px-5 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-5 rounded-full bg-amber-500"></span>
+              <h2 class="text-base sm:text-lg font-bold tracking-wide">附則</h2>
+            </div>
+            <button id="btn-add-appendix" type="button" class="hidden px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold transition">
+              + 新增附則
+            </button>
+          </div>
+          <div id="appendix-container" class="p-5 space-y-3">
+            <!-- 由 JS 動態生成 -->
+          </div>
+        </div>
+
+        <!-- 頁尾資訊 -->
+        <footer class="pt-4 pb-10 text-center text-xs text-slate-400 space-y-1">
+          <p id="footer-updated-info">同盟法規管理系統・支援手機與電腦即時查閱</p>
+        </footer>
+      </div>
+    </div>
+  </main>
+
+  <!-- 1. 管理員密碼驗證視窗 -->
+  <div id="password-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-sm w-full p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl bg-amber-100 text-[#B45309] flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </span>
+          <div>
+            <h3 class="text-base font-bold text-slate-900">管理員身分驗證</h3>
+            <p class="text-xs text-slate-500">請輸入管理密碼以解鎖編輯權限</p>
+          </div>
+        </div>
+        <button id="btn-close-pw-modal" type="button" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="password-form" class="space-y-3">
+        <div>
+          <input
+            id="password-input"
+            type="password"
+            autocomplete="off"
+            placeholder="請輸入管理員密碼..."
+            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+          />
+          <p id="password-error" class="hidden mt-1.5 text-xs font-medium text-[#BE123C]">密碼錯誤，請重新輸入。</p>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-1">
+          <button id="btn-cancel-pw" type="button" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">取消</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-sm font-semibold bg-slate-900 hover:bg-slate-800 text-white transition">確認解鎖</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. 條例編輯／新增視窗 -->
+  <div id="article-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-xl w-full max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 id="article-modal-title" class="text-base font-bold text-slate-900">編輯條例</h3>
+        <button id="btn-close-article-modal" type="button" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <form id="article-form" class="p-6 space-y-4 overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">條號（例：第1條）</label>
+            <input id="art-input-number" type="text" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 mb-1">條例標題</label>
+            <input id="art-input-title" type="text" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">核心規則（每行代表一條重點，可留空）</label>
+          <textarea id="art-input-rules" rows="5" placeholder="每換行一次會自動呈現為獨立條目..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-[#BE123C] mb-1">違規罰則／注意事項（每行代表一條重點，將以警示紅框顯示，可留空）</label>
+          <textarea id="art-input-penalties" rows="4" placeholder="輸入違規處罰或特別注意事項，無罰則可留空..." class="w-full px-3 py-2 rounded-xl border border-rose-200 bg-rose-50/30 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-rose-500"></textarea>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <button id="btn-cancel-article" type="button" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">取消</button>
+          <button type="submit" class="px-5 py-2 rounded-xl text-sm font-semibold bg-amber-600 hover:bg-amber-700 text-white transition">套用修改</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. 通用二次確認視窗 -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 max-w-sm w-full p-6 space-y-4">
+      <div class="space-y-1.5">
+        <h3 id="confirm-modal-title" class="text-base font-bold text-slate-900">確認操作</h3>
+        <p id="confirm-modal-message" class="text-sm text-slate-600 leading-relaxed"></p>
+      </div>
+      <div class="flex items-center justify-end gap-2 pt-1">
+        <button id="btn-confirm-cancel" type="button" class="px-4 py-2 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition">取消</button>
+        <button id="btn-confirm-ok" type="button" class="px-4 py-2 rounded-xl text-sm font-semibold bg-[#BE123C] hover:bg-rose-800 text-white transition">確認執行</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 輕量提示氣泡（Toast） -->
+  <div id="toast" class="pointer-events-none fixed bottom-6 left-1/2 -translate-x-1/2 z-50 opacity-0 translate-y-3 transition-all duration-300">
+    <div id="toast-inner" class="px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-medium shadow-lg flex items-center gap-2 whitespace-nowrap">
+      <span id="toast-message"></span>
+    </div>
+  </div>
+
   <!-- Supabase 與應用程式主邏輯 -->
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    // 👇 請把引號內的文字替換成你剛剛在 Supabase 複製的 anon public 金鑰
     const SUPABASE_URL = "https://htvluhioavqifxrtbvbl.supabase.co";
     const SUPABASE_KEY = "sb_publishable_tu9M93hBLV20rrJ7gUg1uA_CO0kzEBT";
     const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -261,13 +651,6 @@
       const syncText = document.getElementById("sync-text");
 
       try {
-        if (!SUPABASE_KEY || SUPABASE_KEY.includes("貼上你複製的")) {
-          syncDot.className = "w-2 h-2 rounded-full bg-amber-500";
-          syncText.textContent = "尚未填入資料庫金鑰";
-          return;
-        }
-
-        // 讀取目前雲端資料
         const { data, error } = await supabase
           .from("laws")
           .select("content")
@@ -286,7 +669,6 @@
         syncText.textContent = "雲端即時同步中";
         updateFooterTime();
 
-        // 監聽其他管理員的即時更新
         supabase
           .channel("laws-changes")
           .on(
@@ -306,7 +688,7 @@
       } catch (err) {
         console.error("Supabase init error:", err);
         syncDot.className = "w-2 h-2 rounded-full bg-rose-500";
-        syncText.textContent = "連線失敗，請檢查金鑰或資料表";
+        syncText.textContent = "連線失敗，請檢查資料表";
       }
     }
 
